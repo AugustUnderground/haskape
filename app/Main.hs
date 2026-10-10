@@ -8,10 +8,23 @@
 module Main where
 
 import Lib
-import qualified Data.Array.Accelerate             as A
 
 main :: IO ()
 main = do
   -- let grid = mkBGA @NX @NY @NL [0 .. (natInt @NX) * (natInt @NY) * (natInt @NL) - 1]
-  grid <- randomPinout @NX @NY
-  showBGA grid
+  pinout <- randomPinout @NX @NY
+  fanout <- randomFanout @NX @NY pinout
+
+  -- showBGA pinout
+  -- print (A.arrayShape fanout)
+  -- print (take 10 (A.toList fanout))
+
+  -- case validateFanout pinout fanout of
+  --   Right ()    -> putStrLn "Fanout is legal"
+  --   Left errors -> do
+  --     putStrLn "Fanout is illegal:"
+  --     mapM_ putStrLn errors
+  let score = fanoutClashCount fanout
+
+  putStrLn $ "Fanout Score: " ++ show score
+  pure ()
